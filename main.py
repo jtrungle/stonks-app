@@ -1,3 +1,4 @@
+from widgets.tabs import StockTabs
 import httpx
 
 from nicegui import ui
@@ -12,6 +13,13 @@ items = ["101", "BRN", "ASX"]
 
 with ui.row().classes("w-screen h-screen no-wrap"):
     with ui.column().classes("w-1/3"):
+        tabs = StockTabs(['Watchlist', "Watchlist 2"])
+        
+        with ui.tab_panels(tabs, value='h').classes('w-full'):
+            with ui.tab_panel('h'):
+                ui.label('Main Content')
+            with ui.tab_panel('a'):
+                ui.label('Infos')
         StockInput(label="Search").classes('w-full')
         StockList(items).classes('w-full')
 

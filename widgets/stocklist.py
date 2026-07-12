@@ -1,11 +1,12 @@
+from widgets.keybindbase import KeybindMixin
 from nicegui import ui
 from nicegui import events
 
 
-class StockInput(ui.input):
+class StockInput(ui.input, KeybindMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.configure_keybinds()
+        self.register_keybinds()
 
     def focus(self):
         self.run_method("focus")
@@ -15,8 +16,6 @@ class StockInput(ui.input):
             if e.action.keydown:
                 self.focus()
 
-    def configure_keybinds(self):
-        ui.keyboard(on_key=self.handle_key)
 
 
 class Stock(ui.item):
@@ -41,7 +40,7 @@ class Stock(ui.item):
             super().update()
 
 
-class StockList(ui.list):
+class StockList(ui.list, KeybindMixin):
     def __init__(self, items, *args, callback=None, **kwargs):
         self.selected_index = 0
         self.next_index = None
@@ -50,7 +49,7 @@ class StockList(ui.list):
         self.props("bordered separator")
         self.items: list[Stock] = []
         self.build(items)
-        self.configure_keybinds()
+        self.register_keybinds()
 
     def next(self):
 
@@ -85,9 +84,6 @@ class StockList(ui.list):
         if e.key == "k" and not e.action.repeat:
             if e.action.keydown:
                 self.previous()
-
-    def configure_keybinds(self):
-        ui.keyboard(on_key=self.handle_key)
 
     def on_click(self, e):
 
