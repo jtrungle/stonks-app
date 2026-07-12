@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run NiceGUI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "justMyCode": false
+        }
+    ]
+}
