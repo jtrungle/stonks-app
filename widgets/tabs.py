@@ -22,13 +22,25 @@ class StockTabs(ui.tabs):
                 self.previous()
 
     def next(self):
-        pass
+        self.next_tab = self.current_tab + 1
+        self.update_tab()
 
     def previous(self):
-        pass
+        self.next_tab = self.current_tab - 1
+        self.update_tab()
 
-    def update(self):
-        pass
+    def update_tab(self):
+        if self.next_tab is not None:
+            if self.next_tab > len(self.named_tabs) - 1:
+                self.next_tab = None
+                return
+            elif self.next_tab < 0:
+                self.next_tab = None
+                return
+            self.set_value(self.named_tabs[self.next_tab])
+            self.current_tab = self.next_tab
+            self.next_tab = None
+
 
     def register_keybinds(self):
         ui.keyboard(on_key=self.handle_key)

@@ -3,9 +3,10 @@
     "configurations": [
         {
             "name": "Run NiceGUI",
-            "type": "debugpy",
+            "type": "python",
             "request": "launch",
             "program": "main.py",
+            "console": "integratedTerminal",
             "justMyCode": false
         }
     ]
