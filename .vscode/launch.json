@@ -5,7 +5,7 @@
             "name": "Run NiceGUI",
             "type": "python",
             "request": "launch",
-            "program": "main.py",
+            "module": "app.main",
             "console": "integratedTerminal",
             "justMyCode": false
         }

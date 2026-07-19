@@ -1,9 +1,9 @@
 from nicegui import ui
-from nicegui import events
+from app.base.keybindbase import KeybindMixin
 
 
-class StockTabs(ui.tabs):
-    def __init__(self, tabs: list[str], *args, **kwargs):
+class BaseTabs(ui.tabs, KeybindMixin):
+    def __init__(self, tabs: list[str], *args, on_change=None, **kwargs):
         super().__init__(*args, **kwargs)
         self._tabs = tabs
         self.named_tabs = []
@@ -11,15 +11,7 @@ class StockTabs(ui.tabs):
         self.register_keybinds()
         self.current_tab = 0
         self.next_tab = None
-
-    def handle_key(self, e: events.KeyEventArguments):
-        if e.key == "]" and not e.action.repeat:
-            if e.action.keydown:
-                self.next()
-
-        elif e.key == "[" and not e.action.repeat:
-            if e.action.keydown:
-                self.previous()
+        self.on_change = on_change
 
     def next(self):
         self.next_tab = self.current_tab + 1
@@ -32,18 +24,14 @@ class StockTabs(ui.tabs):
     def update_tab(self):
         if self.next_tab is not None:
             if self.next_tab > len(self.named_tabs) - 1:
-                self.next_tab = None
-                return
+                self.next_tab = 0
             elif self.next_tab < 0:
-                self.next_tab = None
-                return
+                self.next_tab = len(self.named_tabs) - 1
             self.set_value(self.named_tabs[self.next_tab])
+            if self.on_change:
+                self.on_change(self.current_tab, self.next_tab)
             self.current_tab = self.next_tab
             self.next_tab = None
-
-
-    def register_keybinds(self):
-        ui.keyboard(on_key=self.handle_key)
 
     def build_tabs(self):
         with self:

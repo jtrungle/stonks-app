@@ -1,12 +1,22 @@
 from nicegui import ui
+from dataclasses import dataclass
+import pandas as pd
 
 DARK = "#1e1e1e"
 LIGHT_TEXT = "#ccc"
 GRID = "#333"
 
 
+@dataclass
+class ChartData:
+    ohlc: pd.DataFrame
+    volume: pd.DataFrame
+
+
 class Chart(ui.highchart):
-    def __init__(self, ohlc, volume):
+    def __init__(self, chart_data: ChartData):
+        ohlc = chart_data.ohlc
+        volume = chart_data.volume
 
         super().__init__(
             {
@@ -128,7 +138,7 @@ class Chart(ui.highchart):
                     {
                         "type": "candlestick",
                         "id": "aapl",
-                        "name": "AAPL Stock Price",
+                        "name": "Stock Price",
                         "data": ohlc,
                         "dataGrouping": {
                             "enabled": True,
@@ -160,3 +170,7 @@ class Chart(ui.highchart):
 
     def update_period(self, number):
         self.options["series"][-1]["params"]["period"] = number
+
+    def update_data(self,data: ChartData):
+        self.options["series"][0]["data"] = data.ohlc
+        self.options["series"][1]["data"] = data.volume
