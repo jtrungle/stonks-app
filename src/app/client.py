@@ -3,6 +3,7 @@ import yfinance as yf
 from app.widgets.chart.widget import ChartData
 from app.models.ticker import Ticker
 from app.exceptions import NoDataFoundError
+from yfinance import EquityQuery
 
 class YFinanceClient:
     def __init__(self) -> None:

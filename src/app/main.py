@@ -3,6 +3,7 @@ from nicegui import ui
 
 from app.base.tabs import BaseTabs
 from nicegui import events
+from app.widgets.screener.widget import ScreenerWidget
 from app.widgets.watchlist.widget import WatchlistWidget
 
 class MainTabs(BaseTabs):
@@ -23,6 +24,6 @@ with ui.tab_panels(tabs, value=tabs.named_tabs[0]).classes("w-full h-screen"):
         WatchlistWidget().build()
 
     with ui.tab_panel("Screener"):
-        ui.label('Screener')
+        ScreenerWidget().build()
 ui.dark_mode(True)
 ui.run(show=False)
