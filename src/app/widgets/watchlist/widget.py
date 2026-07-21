@@ -29,10 +29,25 @@ class Watchlist:
 
 class WatchlistWidget:
     def __init__(self):
+        self.stock_tabs: StockTabs
         self.stocklists: list[StockList] = []
         self.chart_data: ChartData | None = None
         self.watchlists = self.get_watchlists()
         self.load_data()
+        self._active = False
+
+    @property
+    def active(self):
+        return self._active
+
+    @active.setter
+    def active(self, value):
+        self._active = value
+        if value:
+            self.stocklists[0].active = True
+        else:
+            for list_ in self.stocklists:
+                list_.active = False
 
     def get_watchlists(self) -> Watchlists:
         list1 = Watchlist("First", [Ticker("BRN.AX"), Ticker("DRO.AX")])
@@ -57,7 +72,7 @@ class WatchlistWidget:
             self.chart.update_data(self.chart_data)
 
     def on_tab_change(self,previous_tab_index: int,  next_tab_index: int):
-        self.chart_data = self.stocklists[next_tab_index].selected_ticker.chart_data
+        self.chart_data = self.stocklists[next_tab_index].selected_item.chart_data
         if self.chart_data:
             self.chart.update_data(self.chart_data)
         self.stocklists[previous_tab_index].active = False
@@ -65,7 +80,7 @@ class WatchlistWidget:
 
     def build_chart(self):
         if not self.chart_data:
-            self.chart_data = self.stocklists[0].selected_ticker.chart_data
+            self.chart_data = self.stocklists[0].selected_item.chart_data
             if not self.chart_data:
                 return
         with ui.column().classes("w-full h-full"):
@@ -81,8 +96,8 @@ class WatchlistWidget:
         with ui.row().classes('w-full h-full no-wrap'):
             with ui.column().classes("w-1/3"):
                 # StockInput(label="Search").classes("w-full")
-                tabs = StockTabs(self.watchlists.names, on_change=self.on_tab_change)
-                with ui.tab_panels(tabs, value=tabs.named_tabs[0]).classes("w-full"):
+                self.stock_tabs = StockTabs(self.watchlists.names, on_change=self.on_tab_change)
+                with ui.tab_panels(self.stock_tabs, value=self.stock_tabs.named_tabs[0]).classes("w-full"):
                     for idx, watchlist in enumerate(self.watchlists.items):
                         with ui.tab_panel(watchlist.name):
                             stocklist = StockList(
