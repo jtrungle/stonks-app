@@ -1,6 +1,6 @@
 
 from typing import TypedDict, get_args
-from yfinance import EquityQuery,
+from yfinance import EquityQuery
 from nicegui import ui
 from app.base.keybindbase import KeybindMixin
 from nicegui import events
@@ -36,7 +36,7 @@ class QueryBuilder(KeybindMixin):
         if not self.query_dicts:
             for screen in self.DEFAULT_SCREENS:
                 for k, v in screen.items():
-                    query_obj = QueryModel(operator=k,category=v[0],v[1:])
+                    query_obj = QueryModel(operator=k,category="",query=v[0],values=v[1:])
                     self.query_models.append(query_obj)
 
     def handle_key(self, e: events.KeyEventArguments):

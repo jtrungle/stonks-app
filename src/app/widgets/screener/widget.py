@@ -1,31 +1,9 @@
-from typing import TypedDict
 from yfinance import EquityQuery
-import yfinance as yf
-from yfinance.const import EQUITY_SCREENER_FIELDS
 from nicegui import ui
-from dataclasses import dataclass
-from app.base.keybindbase import KeybindMixin
 from app.base.list import BaseList, ListItemWidget
 from nicegui import events
-from nicegui import binding
 from app.widgets.screener.querybuilder import QueryBuilder
-
-
-@dataclass
-class ScreenResponse:
-    start: int
-    count: int
-    total: int
-    quotes: list[dict]
-    useRecords: bool
-
-    @property
-    def quote_fields(self):
-        fields = set()
-        for quote in self.quotes:
-            fields.update(quote)
-        return list(fields)
-
+from app.client import YFinanceClient
 
 class StockList(BaseList[dict]):
     def handle_key(self, e: events.KeyEventArguments):
@@ -79,9 +57,8 @@ class ScreenerWidget:
                 EquityQuery("eq", ["region", "us"]),
             ],
         )
+        res = YFinanceClient().screen(q)
 
-        res = yf.screen(q, sortField="percentchange", sortAsc=True)
-        res = ScreenResponse(**res)
         with ui.row().classes('w-full no-wrap'):
             with ui.column().classes('w-1/3 h-full'):
                 QueryBuilder()
